@@ -1,6 +1,6 @@
 # Lista
 estoque = [
-    { "produto": "Lapis", "quantidade": 0, "valor": 0.50 },
+    { "produto": "Lapis", "quantidade": 1, "valor": 0.50 },
 ]
 # Função para adicionar, nome produto, quantidade e valor
 def adicionar_produto(estoque):
@@ -12,8 +12,8 @@ def adicionar_produto(estoque):
     print(f"\nConfirme as informações:")
     print(f"Produto: {produto}")
     print(f"Quantidade: {quantidade}")
-    print(f"Valor: {preco:.2f}R$")
-    confirmacao = input("As informações estão corretas: s/n").lower()
+    print(f"Valor: R${preco:.2f}")
+    confirmacao = input("As informações estão corretas: s/n:  ").lower()
    
     if confirmacao == "s":
         if quantidade > 0 and preco > 0:
@@ -26,22 +26,40 @@ def adicionar_produto(estoque):
         
             
 def atualizar_estoque(estoque):
-    produto = input("Qual produto deseja ajustar: ")
-    quantidade = int("Qtd: ")
-    preco = float("Preço: ")
-    
-    # Verificar e confirmar
+    produto = input("Qual produto deseja ajustar: ").strip().lower
+    produto_encontrado = False
+    for item in estoque:
+        if item["produto"].lower() == produto:
+            produto_encontrado = True
+            quantidade = int(input("Nova Qtd: "))
+            preco = float(input("Preço atualizado: "))
+            
+     # Verificar e confirmar
     print(f"\nConfirme as informações:")
     print(f"Produto: {produto}")
     print(f"Quantidade: {quantidade}")
-    print(f"Valor: {preco:.2f}R$")
+    print(f"Valor: R${preco:.2f}")
     
-    confirmacao = input("As informações estão corretas? (s/n): ").lower()
-    if confirmacao == 's':
+    confirmacao = input("As informações estão corretas? (s/n):  ").lower()
+    if confirmacao == "s":
         if quantidade >= 0 and preco >= 0:
-            print
+            item["quantidade"] = quantidade
+            item["preço"] = preco
+            print("Produto atualizado com sucesso!")
+        else:
+            print("ERRO, Valor inválido.")
+    else:
+        print("Operação cancelada!")
+        return
+print("Produto não encontrado.")
 
-    
+def visualizar_estoque(estoque):
+    print("\nEstoque:")
+    for item in estoque:
+        print(f"produto: {item['produto']} | quantidade: {item['quantidade']} | valor: {item['valor']:.2f}")
+    print()
+
+print("{:-^30}".format("Controle de estoque"))
 print("""
 [ 1 ] Adicionar Produto
 [ 2 ] Atualizar Produto
@@ -50,14 +68,14 @@ print("""
 """)
 
 while True:
-    escolha = (input("Escolha a opção: "))
+    escolha = (input("Selecione o numero: "))
     
     if escolha == '1':
-        print("Adicionar produto")
+        adicionar_produto(estoque)
     elif escolha == '2':
-        print("Atualizar produto")
+        atualizar_estoque(estoque)
     elif escolha == '3':
-        estoque.lenght
+        visualizar_estoque(estoque)
     elif escolha == '4':
         print("Saindo dos sistema")
         break
