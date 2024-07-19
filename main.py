@@ -25,16 +25,36 @@ def realizar_venda():
         if produto.lower() == "voltar":
             break
         
-        while True:
-            try:
-                quantidade = int(input("Qtd: "))
-                if quantidade <= 0:
-                    raise ValueError("A quantidade deve ser um número inteiro positivo.")
-            except ValueError:
-                print("ERRO: A quantidade deve ser um número inteiro positivo. Tente novamente.")
-                continue
-
+        # Procurar o produto no estoque
+        produto_encontrado = None
+        for item in estoque:
+            if item["produto"].lower() == produto.lower():
+                produto_encontrado = item
+                break
         
+        if not produto_encontrado:
+            print("Produto não encontrado. Tente novamente.")
+            continue
+
+        try:
+            quantidade = int(input("Qtd: "))
+            if quantidade <= 0:
+                raise ValueError("A quantidade deve ser um número inteiro positivo.")
+        except ValueError:
+            print("ERRO: A quantidade deve ser um número inteiro positivo. Tente novamente.")
+            continue
+
+        if quantidade > produto_encontrado["quantidade"]:
+            print("Quantidade em estoque insuficiente. Tente novamente.")
+            continue
+
+        # Processar a venda
+        valor_venda = quantidade * produto_encontrado["valor"]
+        produto_encontrado["quantidade"] -= quantidade
+        vendas.append(valor_venda)
+
+        print(f"Venda realizada com sucesso! Total: {valor_venda:.2f}R$")
+        sleep(2)
 
 def adicionar_produtos():
     while True:
@@ -68,24 +88,6 @@ def adicionar_produtos():
         else:
             print("Operação cancelada.")
         sleep(2)    
-        
-        preco = float(input("Valor R$: "))
-        print("--" * 30)
-        print(f"Produto: {produto}")
-        print(f"Quantidade: {quantidade}")
-        print(f"Valor: {preco:.2f}R$")
-        confirmacao = input("As informações estão corretas? (s/n): ").lower()
-        print("Aguarde...")
-        sleep(2)
-        if confirmacao == "s":
-            if quantidade > 0 and preco > 0:
-                estoque.append({"produto": produto, "quantidade": quantidade, "valor": preco})
-                print("Produto adicionado com sucesso!")
-            else:
-                print("ERRO: quantidade ou preço inválido!")
-        else:
-            print("Operação cancelada.")
-        sleep(2)
 
 def atualizar_produto():
     while True:    
@@ -95,7 +97,7 @@ def atualizar_produto():
     
         try:
             quantidade = int(input("Qtd: "))
-            if quantidade >= 0:
+            if quantidade <= 0:
                 raise ValueError ("ERRO: Quantidade so é permitido número. Tente novamente.")
         except ValueError:
             print("ERRO: A quantidade deve ser um número inteiro positivo. Tente novamente.")
